@@ -28,7 +28,7 @@ provider "aws" {
 
 
 resource "aws_s3_bucket" "bucket" {
- bucket = "exampro_test0722"
+ bucket = "examprotest0722"
 }
 
 
