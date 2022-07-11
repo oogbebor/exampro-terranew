@@ -26,6 +26,12 @@ provider "aws" {
         region  = "us-east-2"
 }
 
+
+resource "aws_s3_bucket" "bucket" {
+ bucket = "exampro_test0722"
+}
+
+
 resource "aws_instance" "exampro_instance" {
   ami           = "ami-00978328f54e31526"
   instance_type = "t2.micro"
