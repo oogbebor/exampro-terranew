@@ -1,5 +1,12 @@
 terraform  {
+backend "remote" {
+ hostname  = "app.terraform.io"
+ organization  = "learn0622"
 
+ workspaces  {
+   name  = "exampro-terranew"
+ }
+}
 required_providers {
       aws = {
       source  = "hashicorp/aws"
