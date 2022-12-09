@@ -1,18 +1,89 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
-jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+terraform  {
+backend "remote" {
+ hostname  = "app.terraform.io"
+ organization  = "learn0622"
+
+ workspaces  {
+   name  = "exampro-terranew"
+ }
+}
+required_providers {
+      aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.8"
+    }
+  }
+}
+
+
+data "aws_vpc" "main"  {
+      id  = "vpc-0fbcb74e68dd273f2"
+}
+
+
+provider "aws" {
+        profile = "default"
+        region  = "us-east-2"
+}
+
+
+resource "aws_s3_bucket" "bucket" {
+ bucket = "newexamprotest0722"
+}
+
+
+resource "aws_instance" "exampro_instance" {
+  ami           = "ami-00978328f54e31526"
+  instance_type = "t2.micro"
+  key_name = var.key_name
+  security_groups = [var.security_group]
+  tags = {
+    Name = var.tag_name
+  }
+}
+
+#Create security group with firewall rules
+resource "aws_security_group" "security_prvisioners_grp" {
+  name        = "prvisioners_security_group"
+  description = "security group for prvisioners"
+  vpc_id  =  data.aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks  = []
+    prefix_list_ids  = []
+    security_groups  = []
+    self  = false
+  }
+
+ ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks  = []
+    prefix_list_ids  = []
+    security_groups  = []
+    self  = false
+  }
+
+
+# outbound from  server
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    ipv6_cidr_blocks  = []
+    prefix_list_ids  = []
+    security_groups  = []
+    self  = false
+  }
+
+  tags= {
+    Name = var.security_group 
+    }
+}
