@@ -1,18 +1,7 @@
-terraform  {
-backend "remote" {
- hostname  = "app.terraform.io"
- organization  = "learn0622"
-
- workspaces  {
-   name  = "exampro-terranew"
- }
-}
-required_providers {
-      aws = {
-      source  = "hashicorp/aws"
-      version = "~> 3.8"
-    }
-  }
+provider "aws" {
+  region                  = "us-east-1"
+  shared_credentials_file = "~/.aws/credentials"
+  profile                 = "cred"
 }
 
 
